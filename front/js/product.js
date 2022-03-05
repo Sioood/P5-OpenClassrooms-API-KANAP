@@ -12,7 +12,6 @@ function fecthProduct() {
       return getProduct.json();
     })
     .then(function (product) {
-
       // get all info of the product and integrate into the DOM
 
       const title = document.getElementsByTagName("title")[0];
@@ -38,9 +37,15 @@ function fecthProduct() {
         );
       });
 
+      document.getElementById("quantity").addEventListener("change", () => {
+        // console.log(quantity.value);
+      });
+
       // don't save the price anywhere
 
       // button add to cart make a save on the local storage not before
+
+      // if in local storage we have already an id and a color which want select -> modify and not add a new object
 
       document
         .getElementById("addToCart")
@@ -50,35 +55,53 @@ function fecthProduct() {
 
           // Comparaison for only add to cart real product
 
-          if( quantity >= 1 && quantity <= 100 && colorsSelect != 0 ){
-
+          if (quantity >= 1 && quantity <= 100 && colorsSelect != 0) {
             // Make an object with all info and not the price -> integrate in the cart by fecth and the id
 
-            let temporaryCart = [{
-              quantity: `${quantity}`,
-              colors: `${colorsSelect}`,
-              id: `${product._id}`,
-              name: `${product.name}`,
-              imageUrl: `${product.imageUrl}`,
-              description: `${product.description}`,
-              altTxt: `${product.altTxt}`,
-            }];
-  
-            let cartJSON = localStorage.getItem("Cart");
-            let cart = JSON.parse(cartJSON);
+            let temporaryCart = [
+              {
+                quantity: Number(quantity),
+                colors: colorsSelect,
+                id: product._id,
+              },
+            ];
+
+            let cart = JSON.parse(localStorage.getItem("Cart"));
 
             // set local storage when empty and not
-  
+
             if (localStorage.getItem("Cart")) {
-              Array.prototype.push.apply(cart, temporaryCart);
-              localStorage.setItem("Cart", JSON.stringify(cart));
+              for (let cartValue of cart) {
+                const index = cart.findIndex(
+                  (e) => e.id === `${id}` && e.colors === `${colorsSelect}`
+                );
+
+                if (cartValue.id === id && cartValue.colors === colorsSelect) {
+
+                  // Set limit of 100 with modify quantities because click the button can overpass the past conditions
+
+                  cart[index].quantity =
+                    cart[index].quantity + temporaryCart[0].quantity;
+
+                  localStorage.setItem("Cart", JSON.stringify(cart));
+
+                  return
+
+                } else if (index === -1) {
+                  Array.prototype.push.apply(cart, temporaryCart);
+                  localStorage.setItem("Cart", JSON.stringify(cart));
+
+                  return
+                }
+              }
             } else {
               localStorage.setItem("Cart", JSON.stringify(temporaryCart));
             }
           }
-
         });
     });
 }
 
 fecthProduct();
+
+let cart = JSON.parse(localStorage.getItem("Cart"));
