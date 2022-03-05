@@ -8,22 +8,6 @@ function fetchAllProducts() {
   )
   .then( function(products) {
     console.log(products);
-
-  // For Loop which can get any data of product -> write in DOM
-
-  // for ( i = 0; i < products.length; i++) {
-  //   const items = document.getElementById("items")
-
-  //   items.insertAdjacentHTML( "afterbegin" , `<a href="./product.html?id="${products[i]._id}">
-  //   <article>
-  //     <img src=".../${products[i].imageUrl}" alt="${products[i].altTxt}">
-  //     <h3 class="productName">${products[i].name}</h3>
-  //     <p class="productDescription">${products[i].description}</p>
-  //   </article>
-  // </a>`)
-  // }
-
-
   // ForEach Loop which can get any data of product -> write in DOM
 
     products.forEach(product => {
