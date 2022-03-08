@@ -73,25 +73,29 @@ function fecthProduct() {
             if (localStorage.getItem("Cart")) {
               for (let cartValue of cart) {
                 const index = cart.findIndex(
-                  (e) => e.id === `${id}` && e.colors === `${colorsSelect}`
+                  (cartElement) =>
+                    cartElement.id === `${id}` &&
+                    cartElement.colors === `${colorsSelect}`
                 );
 
                 if (cartValue.id === id && cartValue.colors === colorsSelect) {
-
                   // Set limit of 100 with modify quantities because click the button can overpass the past conditions
 
                   cart[index].quantity =
                     cart[index].quantity + temporaryCart[0].quantity;
 
+                  if (cart[index].quantity > 100) {
+                    cart[index].quantity = 100;
+                  }
+
                   localStorage.setItem("Cart", JSON.stringify(cart));
 
-                  return
-
+                  return;
                 } else if (index === -1) {
                   Array.prototype.push.apply(cart, temporaryCart);
                   localStorage.setItem("Cart", JSON.stringify(cart));
 
-                  return
+                  return;
                 }
               }
             } else {
@@ -103,5 +107,3 @@ function fecthProduct() {
 }
 
 fecthProduct();
-
-let cart = JSON.parse(localStorage.getItem("Cart"));
