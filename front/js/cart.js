@@ -49,7 +49,7 @@ for (let i = 0; i < cart.length; i++) {
                 
     );
 
-    priceArray.push(info);
+    priceArray.push(info.price);
 
   })
 }
@@ -66,10 +66,37 @@ DOMQuantity.innerHTML = `${totalQuantity}`;
 
 const DOMPrice = document.getElementById("totalPrice")
 const totalPrice = priceArray.reduce((acc, cur) => acc + cur, 0)
-const test = priceArray.map(x => x);
-const test2 = [1849, 1849, 4499]
 DOMPrice.innerHTML = `${totalPrice}`;
 
-console.log(totalQuantity , totalPrice, test, test2);
-
 //For modifications get onchange the data-element id & color <article> and update the DOM & the localstorage
+
+const inputQuantity = document.getElementsByClassName("itemQuantity");
+
+console.log(inputQuantity);
+
+const deleteButton = document.getElementsByClassName("deleteItem");
+
+console.log(deleteButton);
+
+// regex form
+
+let regxTxt = /\d|\s|[-_,]/g; 
+
+let regxAdresse = /([0-9]+)\s([a-zA-Z]+)/;
+
+let regxMail = /([a-zA-Z0-9-_\.]{5,})@([a-zA-Z]+)\.([a-zA-Z]{2,9})/;
+
+// Only texte regex
+
+const firstNameInput = document.getElementById("firstName");
+
+firstNameInput.addEventListener("change", () => {
+  if(!firstNameInput.value.length == 0){
+    if (firstNameInput.value.match(regxTxt)){
+      document.getElementById("firstNameErrorMsg").innerHTML = "ERROR";
+    }
+  }
+  else{
+    document.getElementById("firstNameErrorMsg").innerHTML = "";
+  }
+})

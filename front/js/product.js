@@ -37,10 +37,6 @@ function fecthProduct() {
         );
       });
 
-      document.getElementById("quantity").addEventListener("change", () => {
-        // console.log(quantity.value);
-      });
-
       // don't save the price anywhere
 
       // button add to cart make a save on the local storage not before
@@ -79,6 +75,7 @@ function fecthProduct() {
                 );
 
                 if (cartValue.id === id && cartValue.colors === colorsSelect) {
+                  
                   // Set limit of 100 with modify quantities because click the button can overpass the past conditions
 
                   cart[index].quantity =
