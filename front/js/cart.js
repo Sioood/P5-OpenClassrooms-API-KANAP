@@ -8,7 +8,7 @@ cart.sort(function compare(a, b) {
   if (a.colors > b.colors) return 1;
 });
 
-let priceArray = [];
+let sumPrice = 0;
 
 //Integrate in DOM
 
@@ -46,26 +46,24 @@ for (let i = 0; i < cart.length; i++) {
                 </article>`
       );
 
-      priceArray.push(info.price);
+      //Total quantity
+
+      const DOMQuantity = document.getElementById("totalQuantity");
+      const totalQuantity = Object.values(cart).reduce(
+        (acc, { quantity }) => acc + quantity,
+        0
+      );
+      DOMQuantity.innerHTML = `${totalQuantity}`;
+
+      sumPrice = sumPrice + info.price * cart[i].quantity;
+
+      //Total Price
+
+      const DOMPrice = document.getElementById("totalPrice");
+      const totalPrice = sumPrice;
+      DOMPrice.innerHTML = `${totalPrice}`;
     });
 }
-
-console.log(priceArray);
-
-//Total quantity
-
-const DOMQuantity = document.getElementById("totalQuantity");
-const totalQuantity = Object.values(cart).reduce(
-  (acc, { quantity }) => acc + quantity,
-  0
-);
-DOMQuantity.innerHTML = `${totalQuantity}`;
-
-//Total Price
-
-const DOMPrice = document.getElementById("totalPrice");
-const totalPrice = priceArray.reduce((acc, cur) => acc + cur, 0);
-DOMPrice.innerHTML = `${totalPrice}`;
 
 //For modifications get onchange the data-element id & color <article> and update the DOM & the localstorage
 
@@ -73,7 +71,7 @@ const inputQuantity = document.getElementsByClassName("itemQuantity");
 
 console.log(inputQuantity);
 
-const deleteButton = document.getElementsByClassName("deleteItem");
+const deleteButton = cartItemEl.querySelector("deleteItem");
 
 console.log(deleteButton);
 
@@ -98,6 +96,8 @@ function verify() {
     order.setAttribute("disabled", true);
   }
 }
+
+// set true when empty because required is enable and notify required input if submit
 
 function setTrue() {
   validator = true;
@@ -132,7 +132,7 @@ firstNameInput.addEventListener("input", () => {
     }
   } else {
     document.getElementById("firstNameErrorMsg").innerHTML = "";
-    setFalse();
+    setTrue();
   }
 });
 
@@ -157,7 +157,7 @@ lastNameInput.addEventListener("input", () => {
     }
   } else {
     document.getElementById("lastNameErrorMsg").innerHTML = "";
-    setFalse();
+    setTrue();
   }
 });
 
@@ -182,7 +182,7 @@ cityInput.addEventListener("input", () => {
     }
   } else {
     document.getElementById("cityErrorMsg").innerHTML = "";
-    setFalse();
+    setTrue();
   }
 });
 
@@ -209,7 +209,7 @@ addressInput.addEventListener("input", () => {
     }
   } else {
     document.getElementById("addressErrorMsg").innerHTML = "";
-    setFalse();
+    setTrue();
   }
 });
 
@@ -237,7 +237,7 @@ emailInput.addEventListener("input", () => {
     }
   } else {
     document.getElementById("emailErrorMsg").innerHTML = "";
-    setFalse();
+    setTrue();
   }
 });
 
