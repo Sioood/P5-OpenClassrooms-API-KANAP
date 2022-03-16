@@ -73,7 +73,7 @@ function fecthProduct() {
                     cartElement.id === `${id}` &&
                     cartElement.colors === `${colorsSelect}`
                 );
-
+  
                 if (cartValue.id === id && cartValue.colors === colorsSelect) {
                   
                   // Set limit of 100 with modify quantities because click the button can overpass the past conditions
