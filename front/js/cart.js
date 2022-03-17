@@ -20,6 +20,8 @@ for (let i = 0; i < cart.length; i++) {
     return await response.json();
   }
 
+  // integration products & total of price - quantity
+
   function insert() {
     fetchJsonProduct().then((info) => {
       const cartDisplay = document.getElementById("cart__items");
@@ -50,22 +52,43 @@ for (let i = 0; i < cart.length; i++) {
                 </article>`
       );
 
+      // set total quantity and price
+
+      const DOMQuantity = document.getElementById("totalQuantity");
+
+
       function setCheckout() {
+
+        if (cart.length != 0) {
+          sumPrice = sumPrice + info.price * cart[i].quantity;
+          DOMQuantity.innerHTML = `${totalQuantity}`;
+        }
+        checkout()
+      }
+      setCheckout();
+
+      function modifyCheckout() {
+
+        if (cart.length != 0) {
+          // solve the problem with sumPrice at modification
+          sumPrice = info.price * cart[i].quantity;
+          DOMQuantity.innerHTML = `${totalQuantity}`;
+        }
+        checkout()
+      }
+
+      function checkout() {
         //Total quantity
 
-        const DOMQuantity = document.getElementById("totalQuantity");
         const totalQuantity = Object.values(cart).reduce(
           (acc, { quantity }) => acc + quantity,
           0
         );
-        
 
-        if (cart.length != 0){
-          sumPrice = info.price * cart[i].quantity;
+        if (cart.length != 0) {
           DOMQuantity.innerHTML = `${totalQuantity}`;
-        }
-        else{
-          sumPrice = 0
+        } else {
+          sumPrice = 0;
           DOMQuantity.innerHTML = "0";
         }
 
@@ -75,7 +98,8 @@ for (let i = 0; i < cart.length; i++) {
         const totalPrice = sumPrice;
         DOMPrice.innerHTML = `${totalPrice}`;
       }
-      setCheckout();
+
+      // get out the loop
 
       if (i == cart.length - 1) {
         // Function for modify item in the DOM & the localStorage
@@ -101,7 +125,7 @@ for (let i = 0; i < cart.length; i++) {
                   cart[index].quantity = Number(quantityInput.value);
                   console.log(cart[index].quantity, quantityInput.value);
 
-                  setCheckout();
+                  modifyCheckout();
 
                   localStorage.setItem("Cart", JSON.stringify(cart));
 
@@ -141,14 +165,14 @@ for (let i = 0; i < cart.length; i++) {
                   localStorage.setItem("Cart", JSON.stringify(cart));
                   input.remove();
 
-                  if(cart.length == 0){
+                  if (cart.length == 0) {
                     localStorage.removeItem("Cart");
                   }
 
-                  setCheckout();
-                  
+                  modifyCheckout();
+
                   setTimeout(() => {
-                    alert(`You have deleted this item`); 
+                    alert(`You have deleted this item`);
                   }, 3);
                 }
               }
@@ -159,4 +183,213 @@ for (let i = 0; i < cart.length; i++) {
     });
   }
   insert();
+}
+
+// regex form
+// for the next step(fetch POST) make a extra validation for block the validation if we have an error
+
+let regxTxt = /\d|\s|[-_,]/g;
+
+let regxAddress = /(^[0-9]+)\s([a-zA-Z]+)/g;
+
+let regxMail = /([a-zA-Z0-9-_\.]{5,})@([a-zA-Z]+)\.([a-zA-Z]{2,9})/;
+
+// verify if the form is good and respect regex
+
+let validator = false;
+
+let orderButton = document.getElementById("order");
+
+function verify() {
+  if (validator == true) {
+    orderButton.removeAttribute("disabled");
+  } else {
+    orderButton.setAttribute("disabled", true);
+  }
+}
+
+// set true when empty because required is enable and notify required input if submit
+
+function setTrue() {
+  validator = true;
+  verify();
+}
+
+function setFalse() {
+  validator = false;
+  verify();
+}
+
+// Only text regex
+
+const firstNameInput = document.getElementById("firstName");
+
+firstNameInput.addEventListener("input", () => {
+  if (!firstNameInput.value.length == 0) {
+    if (firstNameInput.value.match(regxTxt)) {
+      document.getElementById("firstNameErrorMsg").innerHTML = "ERROR";
+      setFalse();
+    } else if (
+      !lastNameInput.value.match(regxTxt) &&
+      !lastNameInput.value.match(regxTxt) &&
+      !cityInput.value.match(regxTxt) &&
+      addressInput.value.match(regxAddress) &&
+      emailInput.value.match(regxMail)
+    ) {
+      document.getElementById("firstNameErrorMsg").innerHTML = "";
+      setTrue();
+    } else {
+      document.getElementById("firstNameErrorMsg").innerHTML = "";
+    }
+  } else {
+    document.getElementById("firstNameErrorMsg").innerHTML = "";
+    setTrue();
+  }
+});
+
+const lastNameInput = document.getElementById("lastName");
+
+lastNameInput.addEventListener("input", () => {
+  if (!lastNameInput.value.length == 0) {
+    if (lastNameInput.value.match(regxTxt)) {
+      document.getElementById("lastNameErrorMsg").innerHTML = "ERROR";
+      setFalse();
+    } else if (
+      !lastNameInput.value.match(regxTxt) &&
+      !lastNameInput.value.match(regxTxt) &&
+      !cityInput.value.match(regxTxt) &&
+      addressInput.value.match(regxAddress) &&
+      emailInput.value.match(regxMail)
+    ) {
+      document.getElementById("lastNameErrorMsg").innerHTML = "";
+      setTrue();
+    } else {
+      document.getElementById("lastNameErrorMsg").innerHTML = "";
+    }
+  } else {
+    document.getElementById("lastNameErrorMsg").innerHTML = "";
+    setTrue();
+  }
+});
+
+const cityInput = document.getElementById("city");
+
+cityInput.addEventListener("input", () => {
+  if (!cityInput.value.length == 0) {
+    if (cityInput.value.match(regxTxt)) {
+      document.getElementById("cityErrorMsg").innerHTML = "ERROR";
+      setFalse();
+    } else if (
+      !lastNameInput.value.match(regxTxt) &&
+      !lastNameInput.value.match(regxTxt) &&
+      !cityInput.value.match(regxTxt) &&
+      addressInput.value.match(regxAddress) &&
+      emailInput.value.match(regxMail)
+    ) {
+      document.getElementById("cityErrorMsg").innerHTML = "";
+      setTrue();
+    } else {
+      document.getElementById("cityErrorMsg").innerHTML = "";
+    }
+  } else {
+    document.getElementById("cityErrorMsg").innerHTML = "";
+    setTrue();
+  }
+});
+
+// regex address
+
+const addressInput = document.getElementById("address");
+
+addressInput.addEventListener("input", () => {
+  if (!addressInput.value.length == 0) {
+    if (!addressInput.value.match(regxAddress)) {
+      document.getElementById("addressErrorMsg").innerHTML = "ERROR";
+      setFalse();
+    } else if (
+      !lastNameInput.value.match(regxTxt) &&
+      !lastNameInput.value.match(regxTxt) &&
+      !cityInput.value.match(regxTxt) &&
+      addressInput.value.match(regxAddress) &&
+      emailInput.value.match(regxMail)
+    ) {
+      document.getElementById("addressErrorMsg").innerHTML = "";
+      setTrue();
+    } else {
+      document.getElementById("addressErrorMsg").innerHTML = "";
+    }
+  } else {
+    document.getElementById("addressErrorMsg").innerHTML = "";
+    setTrue();
+  }
+});
+
+// regex mail
+
+const emailInput = document.getElementById("email");
+
+emailInput.addEventListener("input", () => {
+  if (!emailInput.value.length == 0) {
+    if (!emailInput.value.match(regxMail)) {
+      document.getElementById("emailErrorMsg").innerHTML = "ERROR";
+      setFalse();
+    } else if (
+      !lastNameInput.value.match(regxTxt) &&
+      !lastNameInput.value.match(regxTxt) &&
+      !cityInput.value.match(regxTxt) &&
+      addressInput.value.match(regxAddress) &&
+      emailInput.value.match(regxMail)
+    ) {
+      document.getElementById("emailErrorMsg").innerHTML = "";
+      validator = true;
+      verify();
+    } else {
+      document.getElementById("emailErrorMsg").innerHTML = "";
+    }
+    console.log(validator);
+  } else {
+    document.getElementById("emailErrorMsg").innerHTML = "";
+    setTrue();
+  }
+});
+
+//fetch POST the form after verification
+
+orderButton.addEventListener("click", () => {
+  if (validator === true) {
+    order();
+    console.log("redirect");
+  }
+});
+
+function order() {
+  let form = {
+    products: ["107fb5b75607497b96722bda5b504926","8906dfda133f4c20a9d0e34f18adcf06"],
+    //object contact
+    contact : {
+    firstName: firstNameInput.value,
+    lastName: lastNameInput.value,
+    address: addressInput.value,
+    city: cityInput.value,
+    email: emailInput.value,
+    }
+  };
+
+  console.log(JSON.stringify(form));
+
+  fetch("http://localhost:3000/api/products/order", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(form),
+  })
+    .then((response) => response.json())
+
+    // Displaying results to console
+    .then((orderId) => {
+      console.log(orderId.orderId);
+      document.location.href = `./confirmation.html?orderid=${orderId.orderId}`;
+    });
 }
