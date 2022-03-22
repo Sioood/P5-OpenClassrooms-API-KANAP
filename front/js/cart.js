@@ -151,7 +151,7 @@ for (let i = 0; i < cart.length; i++) {
                   localStorage.setItem("Cart", JSON.stringify(cart));
 
                   setTimeout(() => {
-                    // alert(`You have modified this item`);
+                    alert(`You have modified this item`);
                   }, 3);
                 }
               }
