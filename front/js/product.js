@@ -43,63 +43,64 @@ function fecthProduct() {
 
       // if in local storage we have already an id and a color which want select -> modify and not add a new object
 
-      document
-        .getElementById("addToCart")
-        .addEventListener("click", function storage() {
-          const colorsSelect = document.getElementById("colors").value;
-          const quantity = document.getElementById("quantity").value;
+      const addToCart = document.getElementById("addToCart");
 
-          // Comparaison for only add to cart real product
+      addToCart.addEventListener("click", function storage() {
+        const colorsSelect = document.getElementById("colors").value;
+        const quantity = document.getElementById("quantity").value;
 
-          if (quantity >= 1 && quantity <= 100 && colorsSelect != 0) {
-            // Make an object with all info and not the price -> integrate in the cart by fecth and the id
+        // Comparaison for only add to cart real product
 
-            let temporaryCart = [
-              {
-                quantity: Number(quantity),
-                colors: colorsSelect,
-                id: product._id,
-              },
-            ];
+        if (quantity >= 1 && quantity <= 100 && colorsSelect != 0) {
+          // Make an object with all info and not the price -> integrate in the cart by fecth and the id
 
-            let cart = JSON.parse(localStorage.getItem("Cart"));
+          document.location.href = "./cart.html";
 
-            // set local storage when empty and not
+          let temporaryCart = [
+            {
+              quantity: Number(quantity),
+              colors: colorsSelect,
+              id: product._id,
+            },
+          ];
 
-            if (localStorage.getItem("Cart")) {
-              for (let cartValue of cart) {
-                const index = cart.findIndex(
-                  (cartElement) =>
-                    cartElement.id === `${id}` &&
-                    cartElement.colors === `${colorsSelect}`
-                );
-  
-                if (cartValue.id === id && cartValue.colors === colorsSelect) {
-                  
-                  // Set limit of 100 with modify quantities because click the button can overpass the past conditions
+          let cart = JSON.parse(localStorage.getItem("Cart"));
 
-                  cart[index].quantity =
-                    cart[index].quantity + temporaryCart[0].quantity;
+          // set local storage when empty and not
 
-                  if (cart[index].quantity > 100) {
-                    cart[index].quantity = 100;
-                  }
+          if (localStorage.getItem("Cart")) {
+            for (let cartValue of cart) {
+              const index = cart.findIndex(
+                (cartElement) =>
+                  cartElement.id === `${id}` &&
+                  cartElement.colors === `${colorsSelect}`
+              );
 
-                  localStorage.setItem("Cart", JSON.stringify(cart));
+              if (cartValue.id === id && cartValue.colors === colorsSelect) {
+                // Set limit of 100 with modify quantities because click the button can overpass the past conditions
 
-                  return;
-                } else if (index === -1) {
-                  Array.prototype.push.apply(cart, temporaryCart);
-                  localStorage.setItem("Cart", JSON.stringify(cart));
+                cart[index].quantity =
+                  cart[index].quantity + temporaryCart[0].quantity;
 
-                  return;
+                if (cart[index].quantity > 100) {
+                  cart[index].quantity = 100;
                 }
+
+                localStorage.setItem("Cart", JSON.stringify(cart));
+
+                return;
+              } else if (index === -1) {
+                Array.prototype.push.apply(cart, temporaryCart);
+                localStorage.setItem("Cart", JSON.stringify(cart));
+
+                return;
               }
-            } else {
-              localStorage.setItem("Cart", JSON.stringify(temporaryCart));
             }
+          } else {
+            localStorage.setItem("Cart", JSON.stringify(temporaryCart));
           }
-        });
+        }
+      });
     });
 }
 
