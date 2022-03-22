@@ -8,6 +8,18 @@ cart.sort(function compare(a, b) {
   if (a.colors > b.colors) return 1;
 });
 
+// separate id into an array for the POST
+
+function getId() {
+  let idArray = [];
+
+  for (let i = 0; i < cart.length; i++) {
+    idArray.push(cart[i].id);
+  }
+
+  return idArray;
+}
+
 let sumPrice = 0;
 
 //Integrate in DOM
@@ -56,32 +68,42 @@ for (let i = 0; i < cart.length; i++) {
 
       const DOMQuantity = document.getElementById("totalQuantity");
 
-
       function setCheckout() {
-
         if (cart.length != 0) {
           sumPrice = sumPrice + info.price * cart[i].quantity;
           DOMQuantity.innerHTML = `${totalQuantity}`;
         }
-        checkout()
+        checkout();
       }
       setCheckout();
 
       function modifyCheckout() {
-
         if (cart.length != 0) {
-          // solve the problem with sumPrice at modification
-          sumPrice = info.price * cart[i].quantity;
-          DOMQuantity.innerHTML = `${totalQuantity}`;
+          sumPrice = 0;
+          for (let i = 0; i < cart.length; i++) {
+            async function fetchJsonProduct() {
+              const response = await fetch(
+                `http://localhost:3000/api/products/${cart[i].id}`
+              );
+              return await response.json();
+            }
+
+            fetchJsonProduct().then((info) => {
+              sumPrice = sumPrice + info.price * cart[i].quantity;
+
+              if (i == cart.length - 1) {
+                checkout();
+              }
+            });
+          }
         }
-        checkout()
       }
 
       function checkout() {
         //Total quantity
 
         const totalQuantity = Object.values(cart).reduce(
-          (acc, { quantity }) => acc + quantity,
+          (accumulateur, { quantity }) => accumulateur + quantity,
           0
         );
 
@@ -123,14 +145,13 @@ for (let i = 0; i < cart.length; i++) {
                 );
                 if (cartValue.id === id && cartValue.colors === color) {
                   cart[index].quantity = Number(quantityInput.value);
-                  console.log(cart[index].quantity, quantityInput.value);
 
                   modifyCheckout();
 
                   localStorage.setItem("Cart", JSON.stringify(cart));
 
                   setTimeout(() => {
-                    alert(`You have modified this item`);
+                    // alert(`You have modified this item`);
                   }, 3);
                 }
               }
@@ -160,7 +181,8 @@ for (let i = 0; i < cart.length; i++) {
                 );
                 if (cartValue.id === id && cartValue.colors === color) {
                   cart.splice(index, 1);
-                  console.log(cart);
+
+                  getId();
 
                   localStorage.setItem("Cart", JSON.stringify(cart));
                   input.remove();
@@ -190,7 +212,7 @@ for (let i = 0; i < cart.length; i++) {
 
 let regxTxt = /\d|\s|[-_,]/g;
 
-let regxAddress = /(^[0-9]+)\s([a-zA-Z]+)/g;
+let regxAddress = /([0-9]+)\s([a-zA-Z]+)/g;
 
 let regxMail = /([a-zA-Z0-9-_\.]{5,})@([a-zA-Z]+)\.([a-zA-Z]{2,9})/;
 
@@ -220,6 +242,16 @@ function setFalse() {
   verify();
 }
 
+function regxIf() {
+  return (
+    !lastNameInput.value.match(regxTxt) &&
+    !lastNameInput.value.match(regxTxt) &&
+    !cityInput.value.match(regxTxt) &&
+    addressInput.value.match(regxAddress) &&
+    emailInput.value.match(regxMail)
+  );
+}
+
 // Only text regex
 
 const firstNameInput = document.getElementById("firstName");
@@ -229,13 +261,7 @@ firstNameInput.addEventListener("input", () => {
     if (firstNameInput.value.match(regxTxt)) {
       document.getElementById("firstNameErrorMsg").innerHTML = "ERROR";
       setFalse();
-    } else if (
-      !lastNameInput.value.match(regxTxt) &&
-      !lastNameInput.value.match(regxTxt) &&
-      !cityInput.value.match(regxTxt) &&
-      addressInput.value.match(regxAddress) &&
-      emailInput.value.match(regxMail)
-    ) {
+    } else if (regxIf()) {
       document.getElementById("firstNameErrorMsg").innerHTML = "";
       setTrue();
     } else {
@@ -243,7 +269,7 @@ firstNameInput.addEventListener("input", () => {
     }
   } else {
     document.getElementById("firstNameErrorMsg").innerHTML = "";
-    setTrue();
+    setFalse();
   }
 });
 
@@ -254,13 +280,7 @@ lastNameInput.addEventListener("input", () => {
     if (lastNameInput.value.match(regxTxt)) {
       document.getElementById("lastNameErrorMsg").innerHTML = "ERROR";
       setFalse();
-    } else if (
-      !lastNameInput.value.match(regxTxt) &&
-      !lastNameInput.value.match(regxTxt) &&
-      !cityInput.value.match(regxTxt) &&
-      addressInput.value.match(regxAddress) &&
-      emailInput.value.match(regxMail)
-    ) {
+    } else if (regxIf()) {
       document.getElementById("lastNameErrorMsg").innerHTML = "";
       setTrue();
     } else {
@@ -268,7 +288,7 @@ lastNameInput.addEventListener("input", () => {
     }
   } else {
     document.getElementById("lastNameErrorMsg").innerHTML = "";
-    setTrue();
+    setFalse();
   }
 });
 
@@ -279,13 +299,7 @@ cityInput.addEventListener("input", () => {
     if (cityInput.value.match(regxTxt)) {
       document.getElementById("cityErrorMsg").innerHTML = "ERROR";
       setFalse();
-    } else if (
-      !lastNameInput.value.match(regxTxt) &&
-      !lastNameInput.value.match(regxTxt) &&
-      !cityInput.value.match(regxTxt) &&
-      addressInput.value.match(regxAddress) &&
-      emailInput.value.match(regxMail)
-    ) {
+    } else if (regxIf()) {
       document.getElementById("cityErrorMsg").innerHTML = "";
       setTrue();
     } else {
@@ -293,7 +307,7 @@ cityInput.addEventListener("input", () => {
     }
   } else {
     document.getElementById("cityErrorMsg").innerHTML = "";
-    setTrue();
+    setFalse();
   }
 });
 
@@ -306,21 +320,16 @@ addressInput.addEventListener("input", () => {
     if (!addressInput.value.match(regxAddress)) {
       document.getElementById("addressErrorMsg").innerHTML = "ERROR";
       setFalse();
-    } else if (
-      !lastNameInput.value.match(regxTxt) &&
-      !lastNameInput.value.match(regxTxt) &&
-      !cityInput.value.match(regxTxt) &&
-      addressInput.value.match(regxAddress) &&
-      emailInput.value.match(regxMail)
-    ) {
+    } else if (regxIf()) {
       document.getElementById("addressErrorMsg").innerHTML = "";
       setTrue();
     } else {
       document.getElementById("addressErrorMsg").innerHTML = "";
     }
+    console.log(validator);
   } else {
     document.getElementById("addressErrorMsg").innerHTML = "";
-    setTrue();
+    setFalse();
   }
 });
 
@@ -333,23 +342,16 @@ emailInput.addEventListener("input", () => {
     if (!emailInput.value.match(regxMail)) {
       document.getElementById("emailErrorMsg").innerHTML = "ERROR";
       setFalse();
-    } else if (
-      !lastNameInput.value.match(regxTxt) &&
-      !lastNameInput.value.match(regxTxt) &&
-      !cityInput.value.match(regxTxt) &&
-      addressInput.value.match(regxAddress) &&
-      emailInput.value.match(regxMail)
-    ) {
+    } else if (regxIf()) {
       document.getElementById("emailErrorMsg").innerHTML = "";
-      validator = true;
-      verify();
+      setTrue();
     } else {
       document.getElementById("emailErrorMsg").innerHTML = "";
     }
     console.log(validator);
   } else {
     document.getElementById("emailErrorMsg").innerHTML = "";
-    setTrue();
+    setFalse();
   }
 });
 
@@ -358,21 +360,20 @@ emailInput.addEventListener("input", () => {
 orderButton.addEventListener("click", () => {
   if (validator === true) {
     order();
-    console.log("redirect");
   }
 });
 
 function order() {
   let form = {
-    products: ["107fb5b75607497b96722bda5b504926","8906dfda133f4c20a9d0e34f18adcf06"],
+    products: getId(),
     //object contact
-    contact : {
-    firstName: firstNameInput.value,
-    lastName: lastNameInput.value,
-    address: addressInput.value,
-    city: cityInput.value,
-    email: emailInput.value,
-    }
+    contact: {
+      firstName: firstNameInput.value,
+      lastName: lastNameInput.value,
+      address: addressInput.value,
+      city: cityInput.value,
+      email: emailInput.value,
+    },
   };
 
   console.log(JSON.stringify(form));
@@ -389,7 +390,6 @@ function order() {
 
     // Displaying results to console
     .then((orderId) => {
-      console.log(orderId.orderId);
       document.location.href = `./confirmation.html?orderid=${orderId.orderId}`;
     });
 }
