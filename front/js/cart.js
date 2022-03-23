@@ -3,6 +3,7 @@
 
 let cart = JSON.parse(localStorage.getItem("Cart"));
 
+// sort the cart for group the same color together
 cart.sort(function compare(a, b) {
   if (a.id > b.id) return 1;
   if (a.colors > b.colors) return 1;
@@ -20,10 +21,12 @@ function getId() {
   return idArray;
 }
 
+// set sum for calculate after
 let sumPrice = 0;
 
 //Integrate in DOM
 
+// set loop for fetch each product in the cart
 for (let i = 0; i < cart.length; i++) {
   async function fetchJsonProduct() {
     const response = await fetch(
@@ -38,6 +41,7 @@ for (let i = 0; i < cart.length; i++) {
     fetchJsonProduct().then((info) => {
       const cartDisplay = document.getElementById("cart__items");
 
+      // integration in the DOM
       cartDisplay.insertAdjacentHTML(
         "beforeend",
 
@@ -68,6 +72,33 @@ for (let i = 0; i < cart.length; i++) {
 
       const DOMQuantity = document.getElementById("totalQuantity");
 
+      // separate functions for calculate total
+      // base function for the loading setup and the modification
+      function checkout() {
+        //Total quantity
+
+        //reduce for calculate the total of object quantity a,b -> a + b just addition
+        const totalQuantity = Object.values(cart).reduce(
+          (accumulateur, { quantity }) => accumulateur + quantity,
+          0
+        );
+
+        // set 0 if cart is empty
+        if (cart.length != 0) {
+          DOMQuantity.innerHTML = `${totalQuantity}`;
+        } else {
+          sumPrice = 0;
+          DOMQuantity.innerHTML = "0";
+        }
+
+        // Total Price
+
+        const DOMPrice = document.getElementById("totalPrice");
+        const totalPrice = sumPrice;
+        DOMPrice.innerHTML = `${totalPrice}`;
+      }
+
+      // set the total with the fetch at loading
       function setCheckout() {
         if (cart.length != 0) {
           sumPrice = sumPrice + info.price * cart[i].quantity;
@@ -77,6 +108,7 @@ for (let i = 0; i < cart.length; i++) {
       }
       setCheckout();
 
+      // function at modification, refectch each id of product and get price
       function modifyCheckout() {
         if (cart.length != 0) {
           sumPrice = 0;
@@ -88,6 +120,7 @@ for (let i = 0; i < cart.length; i++) {
               return await response.json();
             }
 
+            // recalculate global quantities and prices
             fetchJsonProduct().then((info) => {
               sumPrice = sumPrice + info.price * cart[i].quantity;
 
@@ -99,33 +132,12 @@ for (let i = 0; i < cart.length; i++) {
         }
       }
 
-      function checkout() {
-        //Total quantity
-
-        const totalQuantity = Object.values(cart).reduce(
-          (accumulateur, { quantity }) => accumulateur + quantity,
-          0
-        );
-
-        if (cart.length != 0) {
-          DOMQuantity.innerHTML = `${totalQuantity}`;
-        } else {
-          sumPrice = 0;
-          DOMQuantity.innerHTML = "0";
-        }
-
-        //Total Price
-
-        const DOMPrice = document.getElementById("totalPrice");
-        const totalPrice = sumPrice;
-        DOMPrice.innerHTML = `${totalPrice}`;
-      }
-
       // get out the loop
 
       if (i == cart.length - 1) {
         // Function for modify item in the DOM & the localStorage
 
+        // get html collection and transform into an array
         let getQuantityInputs = document.getElementsByClassName("itemQuantity");
         let quantityInputs = [...getQuantityInputs];
 
@@ -133,6 +145,8 @@ for (let i = 0; i < cart.length; i++) {
           quantityInput.addEventListener("change", () => {
             const input = quantityInput.closest(".cart__item");
             checkProduct();
+
+            // check the index of the product which want a modification
             async function checkProduct() {
               const id = await input.dataset.id;
               const color = await input.dataset.color;
@@ -143,6 +157,8 @@ for (let i = 0; i < cart.length; i++) {
                     cartElement.id === `${id}` &&
                     cartElement.colors === `${color}`
                 );
+
+                // check the index and modify the right one in the localStorage
                 if (cartValue.id === id && cartValue.colors === color) {
                   cart[index].quantity = Number(quantityInput.value);
 
@@ -150,6 +166,7 @@ for (let i = 0; i < cart.length; i++) {
 
                   localStorage.setItem("Cart", JSON.stringify(cart));
 
+                  // alert after the modification
                   setTimeout(() => {
                     alert(`You have modified this item`);
                   }, 3);
@@ -161,6 +178,7 @@ for (let i = 0; i < cart.length; i++) {
 
         // Function for delete item in the DOM & the localStorage
 
+        // get html collection and transform into an array
         let getDeleteInputs = document.getElementsByClassName("deleteItem");
         let deleteInputs = [...getDeleteInputs];
 
@@ -169,6 +187,8 @@ for (let i = 0; i < cart.length; i++) {
             const input = deleteInput.closest(".cart__item");
 
             checkProduct();
+
+            // check the index of the product which want a modification
             async function checkProduct() {
               const id = await input.dataset.id;
               const color = await input.dataset.color;
@@ -179,6 +199,8 @@ for (let i = 0; i < cart.length; i++) {
                     cartElement.id === `${id}` &&
                     cartElement.colors === `${color}`
                 );
+
+                // check the index and modify the right one in the localStorage
                 if (cartValue.id === id && cartValue.colors === color) {
                   cart.splice(index, 1);
 
@@ -193,6 +215,7 @@ for (let i = 0; i < cart.length; i++) {
 
                   modifyCheckout();
 
+                  // alert after delete
                   setTimeout(() => {
                     alert(`You have deleted this item`);
                   }, 3);
@@ -326,7 +349,6 @@ addressInput.addEventListener("input", () => {
     } else {
       document.getElementById("addressErrorMsg").innerHTML = "";
     }
-    console.log(validator);
   } else {
     document.getElementById("addressErrorMsg").innerHTML = "";
     setFalse();
@@ -348,14 +370,13 @@ emailInput.addEventListener("input", () => {
     } else {
       document.getElementById("emailErrorMsg").innerHTML = "";
     }
-    console.log(validator);
   } else {
     document.getElementById("emailErrorMsg").innerHTML = "";
     setFalse();
   }
 });
 
-//fetch POST the form after verification
+// fetch POST the form after verification
 
 orderButton.addEventListener("click", () => {
   if (validator === true) {
@@ -364,6 +385,7 @@ orderButton.addEventListener("click", () => {
 });
 
 function order() {
+  // make and object and get the array of id we have setup earlier
   let form = {
     products: getId(),
     //object contact
@@ -376,8 +398,7 @@ function order() {
     },
   };
 
-  console.log(JSON.stringify(form));
-
+  // fetch POST the form
   fetch("http://localhost:3000/api/products/order", {
     method: "POST",
     headers: {
@@ -388,7 +409,7 @@ function order() {
   })
     .then((response) => response.json())
 
-    // Displaying results to console
+    // redirect to confirmation with id
     .then((orderId) => {
       document.location.href = `./confirmation.html?orderid=${orderId.orderId}`;
     });

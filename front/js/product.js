@@ -1,3 +1,5 @@
+// get the id of product in the url
+
 paramsString = new URL(window.location.href);
 
 let searchParams = new URLSearchParams(paramsString.search);
@@ -39,6 +41,8 @@ function fecthProduct() {
 
       // don't save the price anywhere
 
+      // Make an object with all info and not the price -> integrate in the cart by fecth and the id
+
       // button add to cart make a save on the local storage not before
 
       // if in local storage we have already an id and a color which want select -> modify and not add a new object
@@ -52,10 +56,10 @@ function fecthProduct() {
         // Comparaison for only add to cart real product
 
         if (quantity >= 1 && quantity <= 100 && colorsSelect != 0) {
-          // Make an object with all info and not the price -> integrate in the cart by fecth and the id
-
+          //redirect into the cart after addToCart
           document.location.href = "./cart.html";
 
+          // set array and object for each product
           let temporaryCart = [
             {
               quantity: Number(quantity),
@@ -77,10 +81,11 @@ function fecthProduct() {
               );
 
               if (cartValue.id === id && cartValue.colors === colorsSelect) {
-                // Set limit of 100 with modify quantities because click the button can overpass the past conditions
-
+                // modify the quantity of existing
                 cart[index].quantity =
                   cart[index].quantity + temporaryCart[0].quantity;
+
+                // Set limit of 100 with modify quantities because click the button can overpass the past conditions
 
                 if (cart[index].quantity > 100) {
                   cart[index].quantity = 100;
@@ -90,6 +95,7 @@ function fecthProduct() {
 
                 return;
               } else if (index === -1) {
+                //if product don't have index in the cart create an object and push it
                 Array.prototype.push.apply(cart, temporaryCart);
                 localStorage.setItem("Cart", JSON.stringify(cart));
 
@@ -97,6 +103,7 @@ function fecthProduct() {
               }
             }
           } else {
+            //if cart is empty set localStorage item
             localStorage.setItem("Cart", JSON.stringify(temporaryCart));
           }
         }
