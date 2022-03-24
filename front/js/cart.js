@@ -233,7 +233,7 @@ for (let i = 0; i < cart.length; i++) {
 // regex form
 // for the next step(fetch POST) make a extra validation for block the validation if we have an error
 
-let regxTxt = /\d|\s|[-_,]/g;
+let regxTxt = /(\d|\s|[-_,])/g;
 
 let regxAddress = /([0-9]+)\s([a-zA-Z]+)/g;
 
@@ -266,20 +266,22 @@ function setFalse() {
 }
 
 function regxIf() {
-  return (
-    !lastNameInput.value.match(regxTxt) &&
-    !lastNameInput.value.match(regxTxt) &&
-    !cityInput.value.match(regxTxt) &&
-    addressInput.value.match(regxAddress) &&
-    emailInput.value.match(regxMail)
-  );
+  if (firstNameInput.value.length != 0 && lastNameInput.value.length != 0 && cityInput.value.length != 0 && addressInput.value.length != 0 && emailInput.value.length != 0){
+    return (
+      !firstNameInput.value.match(regxTxt) &&
+      !lastNameInput.value.match(regxTxt) &&
+      !cityInput.value.match(regxTxt) &&
+      addressInput.value.match(regxAddress) &&
+      emailInput.value.match(regxMail)
+    );
+  }
 }
 
 // Only text regex
 
 const firstNameInput = document.getElementById("firstName");
 
-firstNameInput.addEventListener("input", () => {
+function regexFirstName() {
   if (!firstNameInput.value.length == 0) {
     if (firstNameInput.value.match(regxTxt)) {
       document.getElementById("firstNameErrorMsg").innerHTML = "ERROR";
@@ -294,11 +296,16 @@ firstNameInput.addEventListener("input", () => {
     document.getElementById("firstNameErrorMsg").innerHTML = "";
     setFalse();
   }
+}
+
+firstNameInput.addEventListener("input", () => {
+  regexFirstName();
+  console.log(firstNameInput.value.match(regxTxt));
 });
 
 const lastNameInput = document.getElementById("lastName");
 
-lastNameInput.addEventListener("input", () => {
+function regexLastName() {
   if (!lastNameInput.value.length == 0) {
     if (lastNameInput.value.match(regxTxt)) {
       document.getElementById("lastNameErrorMsg").innerHTML = "ERROR";
@@ -313,11 +320,15 @@ lastNameInput.addEventListener("input", () => {
     document.getElementById("lastNameErrorMsg").innerHTML = "";
     setFalse();
   }
+}
+
+lastNameInput.addEventListener("input", () => {
+  regexLastName();
 });
 
 const cityInput = document.getElementById("city");
 
-cityInput.addEventListener("input", () => {
+function regexCity() {
   if (!cityInput.value.length == 0) {
     if (cityInput.value.match(regxTxt)) {
       document.getElementById("cityErrorMsg").innerHTML = "ERROR";
@@ -332,13 +343,17 @@ cityInput.addEventListener("input", () => {
     document.getElementById("cityErrorMsg").innerHTML = "";
     setFalse();
   }
+}
+
+cityInput.addEventListener("input", () => {
+  regexCity();
 });
 
 // regex address
 
 const addressInput = document.getElementById("address");
 
-addressInput.addEventListener("input", () => {
+function regexAddress() {
   if (!addressInput.value.length == 0) {
     if (!addressInput.value.match(regxAddress)) {
       document.getElementById("addressErrorMsg").innerHTML = "ERROR";
@@ -353,13 +368,18 @@ addressInput.addEventListener("input", () => {
     document.getElementById("addressErrorMsg").innerHTML = "";
     setFalse();
   }
+}
+
+addressInput.addEventListener("input", () => {
+  regexAddress();
+  console.log(!addressInput.value.match(regxAddress));
 });
 
 // regex mail
 
 const emailInput = document.getElementById("email");
 
-emailInput.addEventListener("input", () => {
+function regexEmail() {
   if (!emailInput.value.length == 0) {
     if (!emailInput.value.match(regxMail)) {
       document.getElementById("emailErrorMsg").innerHTML = "ERROR";
@@ -374,6 +394,10 @@ emailInput.addEventListener("input", () => {
     document.getElementById("emailErrorMsg").innerHTML = "";
     setFalse();
   }
+}
+
+emailInput.addEventListener("input", () => {
+  regexEmail();
 });
 
 // fetch POST the form after verification
