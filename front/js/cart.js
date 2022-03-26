@@ -165,11 +165,6 @@ for (let i = 0; i < cart.length; i++) {
                   modifyCheckout();
 
                   localStorage.setItem("Cart", JSON.stringify(cart));
-
-                  // alert after the modification
-                  setTimeout(() => {
-                    alert(`You have modified this item`);
-                  }, 3);
                 }
               }
             }
@@ -214,11 +209,6 @@ for (let i = 0; i < cart.length; i++) {
                   }
 
                   modifyCheckout();
-
-                  // alert after delete
-                  setTimeout(() => {
-                    alert(`You have deleted this item`);
-                  }, 3);
                 }
               }
             }
@@ -284,7 +274,7 @@ const firstNameInput = document.getElementById("firstName");
 function regexFirstName() {
   if (!firstNameInput.value.length == 0) {
     if (firstNameInput.value.match(regxTxt)) {
-      document.getElementById("firstNameErrorMsg").innerHTML = "ERROR";
+      document.getElementById("firstNameErrorMsg").innerHTML = `${firstNameInput.value} n'est pas valide veuillez ne mettre que des lettres.`;
       setFalse();
     } else if (regxIf()) {
       document.getElementById("firstNameErrorMsg").innerHTML = "";
@@ -308,7 +298,7 @@ const lastNameInput = document.getElementById("lastName");
 function regexLastName() {
   if (!lastNameInput.value.length == 0) {
     if (lastNameInput.value.match(regxTxt)) {
-      document.getElementById("lastNameErrorMsg").innerHTML = "ERROR";
+      document.getElementById("lastNameErrorMsg").innerHTML = `${lastNameInput.value} n'est pas valide veuillez ne mettre que des lettres.`;
       setFalse();
     } else if (regxIf()) {
       document.getElementById("lastNameErrorMsg").innerHTML = "";
@@ -331,7 +321,7 @@ const cityInput = document.getElementById("city");
 function regexCity() {
   if (!cityInput.value.length == 0) {
     if (cityInput.value.match(regxTxt)) {
-      document.getElementById("cityErrorMsg").innerHTML = "ERROR";
+      document.getElementById("cityErrorMsg").innerHTML = `${cityInput.value} n'est pas valide veuillez ne mettre que des lettres.`;
       setFalse();
     } else if (regxIf()) {
       document.getElementById("cityErrorMsg").innerHTML = "";
@@ -356,7 +346,7 @@ const addressInput = document.getElementById("address");
 function regexAddress() {
   if (!addressInput.value.length == 0) {
     if (!addressInput.value.match(regxAddress)) {
-      document.getElementById("addressErrorMsg").innerHTML = "ERROR";
+      document.getElementById("addressErrorMsg").innerHTML = `${addressInput.value} n'est pas valide veuillez rentrer une adresse valide. (6 rue de...)`;
       setFalse();
     } else if (regxIf()) {
       document.getElementById("addressErrorMsg").innerHTML = "";
@@ -382,7 +372,7 @@ const emailInput = document.getElementById("email");
 function regexEmail() {
   if (!emailInput.value.length == 0) {
     if (!emailInput.value.match(regxMail)) {
-      document.getElementById("emailErrorMsg").innerHTML = "ERROR";
+      document.getElementById("emailErrorMsg").innerHTML = `${emailInput.value} n'est pas valide veuillez rentrer une adresse email valide. (exemple@email.com)`;
       setFalse();
     } else if (regxIf()) {
       document.getElementById("emailErrorMsg").innerHTML = "";
