@@ -11,16 +11,27 @@ function fetchAllProducts() {
       products.forEach((product) => {
         const items = document.getElementById("items");
 
-        items.insertAdjacentHTML(
-          "beforeend",
-          `<a href="./product.html?id=${product._id}">
-    <article>
-      <img src="${product.imageUrl}" alt="${product.altTxt}">
-      <h3 class="productName">${product.name}</h3>
-      <p class="productDescription">${product.description}</p>
-    </article>
-  </a>`
-        );
+        const anchor = document.createElement("a");
+        anchor.setAttribute("href", `./product.html?id=${product._id}`);
+        items.appendChild(anchor);
+
+        const article = document.createElement("article");
+        anchor.appendChild(article);
+
+        const img = document.createElement("img");
+        img.setAttribute("src", `${product.imageUrl}`);
+        img.setAttribute("alt", `${product.altTxt}`);
+        article.appendChild(img);
+
+        const title = document.createElement("h3");
+        title.setAttribute("class", "productName");
+        title.innerText = `${product.name}`;
+        article.appendChild(title);
+
+        const paragraph = document.createElement("p");
+        paragraph.setAttribute("class", "productDescription")
+        paragraph.innerText = `${product.description}`;
+        article.appendChild(paragraph);
       });
     });
 }

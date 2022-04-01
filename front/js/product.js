@@ -1,15 +1,19 @@
 // get the id of product in the url
 
-paramsString = new URL(window.location.href);
+function getId() {
+  paramsString = new URL(window.location.href);
 
-let searchParams = new URLSearchParams(paramsString.search);
+  let searchParams = new URLSearchParams(paramsString.search);
 
-const id = searchParams.get("id");
+  const id = searchParams.get("id");
+
+  return id
+}
 
 // fetch only the product of id
 
 function fecthProduct() {
-  fetch(`http://localhost:3000/api/products/${id}`)
+  fetch(`http://localhost:3000/api/products/${getId()}`)
     .then(function (getProduct) {
       return getProduct.json();
     })
@@ -76,11 +80,11 @@ function fecthProduct() {
             for (let cartValue of cart) {
               const index = cart.findIndex(
                 (cartElement) =>
-                  cartElement.id === `${id}` &&
+                  cartElement.id === `${getId()}` &&
                   cartElement.colors === `${colorsSelect}`
               );
 
-              if (cartValue.id === id && cartValue.colors === colorsSelect) {
+              if (cartValue.id === getId() && cartValue.colors === colorsSelect) {
                 // modify the quantity of existing
                 cart[index].quantity =
                   cart[index].quantity + temporaryCart[0].quantity;
